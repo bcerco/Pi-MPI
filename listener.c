@@ -1,13 +1,28 @@
-#include "cbjlocal.h"
+#include <stdio.h>
+#include <string.h>
+#include <ctype.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <netdb.h>
+#include <arpa/inet.h>
+#include <errno.h>
 
+#define PORT 			5000
+#define FILENAME 	"foo.c"
 int
 main(void) 
 {
-	char error_message[] = "Unknown command.\n\0"; 
-	int orig_sock,
-			new_sock,
-			clnt_len;
+	int orig_sock;
+	int new_sock;
+	int	clnt_len;
 
+	char buffer[BUFSIZ];
+	int file_size;
+	FILE *received_file;
+	int remain_data = 0;
 	struct sockaddr_in
 		clnt_adr,
 		serv_adr;
@@ -46,19 +61,24 @@ main(void)
 		}
 
 		if (fork() == 0) {
-			while ((len=read(new_sock,buf,BUFSIZ)) > 0) {
+			recv(new_sock, buffer, BUFSIZ, 0);
+			file_size = atoi(buffer);
 
-				if (strcmp(buf, "hit\n") == 0)
-					write(new_sock, buf, len);
-				else if (strcmp(buf, "stand\n") == 0)
-					write(new_sock, buf, len);
-				else if(buf[0] != '.')
-					write(new_sock, error_message, strlen(error_message));
-				else
-					break;
-				memset(&buf[0], 0, BUFSIZ);
-
+			/* attempt to open file */
+			received_file = fopen(FILENAME, "w");
+			if (received_file == NULL){
+				fprintf(stderr, "Failed to open file --> %s\n", strerror(errno));
+				exit(EXIT_FAILURE);
 			}
+			/* read from socket until we get all the expected bytes */
+			remain_data = file_size;
+			while (((len = recv(new_sock, buffer, BUFSIZ, 0)) > 0) 
+					&&
+					(remain_data > 0)){
+				fwrite(buffer, sizeof(char), len, received_file);
+				remain_data -= len;
+			}
+			fclose(received_file);
 			close(new_sock);
 			exit(0);
 		}
