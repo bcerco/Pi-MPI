@@ -84,6 +84,7 @@ main(int argc, char *argv[])
 	}
 	/* send file in chuncks */
 	offset = 0;
+	remain_data = file_stat.st_size;
 	while (((sent_bytes = sendfile(orig_sock, fd, &offset, BUFSIZ)) > 0)
 				&&
 				((remain_data > 0))){
