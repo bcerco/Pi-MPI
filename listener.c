@@ -29,6 +29,7 @@ main(void)
 
 	int len, i;
 
+	/* create orig_socket */
 	if((orig_sock = socket(AF_INET, SOCK_STREAM, 0)) < 0){
 		fprintf(stderr, "Error creating socket --> %s\n", strerror(errno));
 		exit(EXIT_FAILURE);
@@ -40,19 +41,22 @@ main(void)
 	serv_adr.sin_addr.s_addr = htonl(INADDR_ANY);
 	serv_adr.sin_port = htons(PORT);
 
+	/* attempt to bing orig_sock */
 	if (bind(orig_sock, (struct sockaddr *) &serv_adr, sizeof(serv_adr)) < 0) {
 		fprintf(stderr, "Error on bind --> %s\n", strerror(errno));
 		close(orig_sock);
 		exit(EXIT_FAILURE);
 	}
 
+	/* listen on orig_sock */
 	if (listen(orig_sock, 5) < 0) {
 		fprintf(stderr, "Error on listen --> %s\n", strerror(errno));
 		exit(EXIT_FAILURE);
 	}
+	/* loop indefinitly */
 	do {
 		clnt_len = sizeof(clnt_adr);
-
+		/* attempt to accept the socket */
 		if ((new_sock = accept(orig_sock, (struct sockaddr *) &clnt_adr,
 						&clnt_len)) < 0) {
 			fprintf(stderr, "Error on accept --> %s\n", strerror(errno));
@@ -61,6 +65,7 @@ main(void)
 		}
 
 		if (fork() == 0) {
+			/* get the size in bytes of the incoming file */
 			recv(new_sock, buffer, BUFSIZ, 0);
 			file_size = atoi(buffer);
 
@@ -80,7 +85,7 @@ main(void)
 			}
 			fclose(received_file);
 			close(new_sock);
-			exit(0);
+			_exit(0);
 		}
 		else {
 			close(new_sock);
