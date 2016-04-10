@@ -41,7 +41,7 @@ main(void)
 	serv_adr.sin_addr.s_addr = htonl(INADDR_ANY);
 	serv_adr.sin_port = htons(PORT);
 
-	/* attempt to bing orig_sock */
+	/* attempt to bind orig_sock */
 	if (bind(orig_sock, (struct sockaddr *) &serv_adr, sizeof(serv_adr)) < 0) {
 		fprintf(stderr, "Error on bind --> %s\n", strerror(errno));
 		close(orig_sock);
@@ -53,7 +53,7 @@ main(void)
 		fprintf(stderr, "Error on listen --> %s\n", strerror(errno));
 		exit(EXIT_FAILURE);
 	}
-	/* loop indefinitly */
+	/* loop indefinitely */
 	do {
 		clnt_len = sizeof(clnt_adr);
 		/* attempt to accept the socket */

@@ -74,7 +74,7 @@ main(int argc, char *argv[])
 		fprintf(stderr, "Error fstat --> %s", strerror(errno));
 		exit(EXIT_FAILURE);
 	}
-	/* ouput file size */
+	/* output file size */
 	fprintf(stdout, "File size: \n%d bytes\n", (int)file_stat.st_size);
 	sprintf(file_size, "%d", (int)file_stat.st_size);
 	sock_len = sizeof(struct sockaddr_in);
@@ -83,7 +83,7 @@ main(int argc, char *argv[])
 		fprintf(stderr, "Error sending file size --> %s", strerror(errno));
 		exit(EXIT_FAILURE);
 	}
-	/* send file in chuncks */
+	/* send file in chunks */
 	offset = 0;
 	remain_data = file_stat.st_size;
 	while (((sent_bytes = sendfile(orig_sock, fd, &offset, BUFSIZ)) > 0)
