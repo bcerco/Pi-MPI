@@ -55,13 +55,13 @@ main(int argc, char *argv[])
 	serv_adr.sin_port = htons(PORT);
 
 	if ((orig_sock = socket(AF_INET, SOCK_STREAM,0)) < 0) {
-		perror("generate error ");
-		exit(3);
+		fprintf(stderr, "Error creating socket --> %s\n", strerror(errno));
+		exit(EXIT_FAILURE);
 	}
 
 	if (connect(orig_sock, (struct sockaddr *)&serv_adr, sizeof(serv_adr)) < 0) {
-		perror("connect error");
-		exit(4);
+		fprintf(stderr, "Error on connect --> %s\n", strerror(errno));
+		exit(EXIT_FAILURE);
 	}
 	/* open file */
 	fd = open(FILE_TO_SEND, O_RDONLY);
@@ -75,7 +75,8 @@ main(int argc, char *argv[])
 		exit(EXIT_FAILURE);
 	}
 	/* ouput file size */
-	fprintf(stdout, "File size: \n%d bytes\n", file_stat.st_size);
+	fprintf(stdout, "File size: \n%d bytes\n", (int)file_stat.st_size);
+	sprintf(file_size, "%d", (int)file_stat.st_size);
 	sock_len = sizeof(struct sockaddr_in);
 	len = send(orig_sock, file_size, sizeof(file_size), 0);
 	if (len < 0){

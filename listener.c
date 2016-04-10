@@ -30,8 +30,8 @@ main(void)
 	int len, i;
 
 	if((orig_sock = socket(AF_INET, SOCK_STREAM, 0)) < 0){
-		perror("generate error");
-		exit(1);
+		fprintf(stderr, "Error creating socket --> %s\n", strerror(errno));
+		exit(EXIT_FAILURE);
 	}
 
 	memset (&serv_adr, 0, sizeof(serv_adr));
@@ -41,23 +41,23 @@ main(void)
 	serv_adr.sin_port = htons(PORT);
 
 	if (bind(orig_sock, (struct sockaddr *) &serv_adr, sizeof(serv_adr)) < 0) {
-		perror("bind error");
+		fprintf(stderr, "Error on bind --> %s\n", strerror(errno));
 		close(orig_sock);
-		exit(2);
+		exit(EXIT_FAILURE);
 	}
 
 	if (listen(orig_sock, 5) < 0) {
-		perror("listen error");
-		exit(3);
+		fprintf(stderr, "Error on listen --> %s\n", strerror(errno));
+		exit(EXIT_FAILURE);
 	}
 	do {
 		clnt_len = sizeof(clnt_adr);
 
 		if ((new_sock = accept(orig_sock, (struct sockaddr *) &clnt_adr,
 						&clnt_len)) < 0) {
-			perror("accept error");
+			fprintf(stderr, "Error on accept --> %s\n", strerror(errno));
 			close(orig_sock);
-			exit(4);
+			exit(EXIT_FAILURE);
 		}
 
 		if (fork() == 0) {
