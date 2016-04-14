@@ -21,6 +21,7 @@ main(void)
 	socklen_t	clnt_len;
 	int status;
 	char buffer[BUFSIZ];
+	printf("BUFSIZ: %d\n", BUFSIZ);
 	int file_size;
 	FILE *received_file;
 	int remain_data = 0;
@@ -81,9 +82,11 @@ main(void)
 			while (((len = recv(new_sock, buffer, BUFSIZ, 0)) > 0) 
 					&&
 					(remain_data > 0)){
+				printf("Remain: %d, Len: %d\n", remain_data, len); 
 				fwrite(buffer, sizeof(char), len, received_file);
 				remain_data -= len;
 			}
+			printf("%s\n", strerror(errno));
 			fclose(received_file);
 			close(new_sock);
 			_exit(0);
