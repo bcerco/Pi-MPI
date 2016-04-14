@@ -21,7 +21,6 @@ main(int argc, char *argv[])
 {
 	socklen_t sock_len;
 	ssize_t len;
-	char buffer[BUFSIZ];
 	int orig_sock;
 	int fd;
 	int sent_bytes = 0;
@@ -75,7 +74,7 @@ main(int argc, char *argv[])
 		exit(EXIT_FAILURE);
 	}
 	/* output file size */
-	fprintf(stdout, "File size: \n%d bytes\n", (int)file_stat.st_size);
+	fprintf(stdout, "File size: %d bytes\n", (int)file_stat.st_size);
 	sprintf(file_size, "%d", (int)file_stat.st_size);
 	sock_len = sizeof(struct sockaddr_in);
 	len = send(orig_sock, file_size, sizeof(file_size), 0);

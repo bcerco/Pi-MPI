@@ -5,6 +5,7 @@
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/socket.h>
+#include <sys/wait.h>
 #include <netinet/in.h>
 #include <netdb.h>
 #include <arpa/inet.h>
@@ -17,8 +18,8 @@ main(void)
 {
 	int orig_sock;
 	int new_sock;
-	int	clnt_len;
-
+	socklen_t	clnt_len;
+	int status;
 	char buffer[BUFSIZ];
 	int file_size;
 	FILE *received_file;
@@ -27,7 +28,7 @@ main(void)
 		clnt_adr,
 		serv_adr;
 
-	int len, i;
+	int len;
 
 	/* create orig_socket */
 	if((orig_sock = socket(AF_INET, SOCK_STREAM, 0)) < 0){
@@ -64,7 +65,7 @@ main(void)
 			exit(EXIT_FAILURE);
 		}
 
-		if (fork() == 0) {
+		if (fork() ==  0) {
 			/* get the size in bytes of the incoming file */
 			recv(new_sock, buffer, BUFSIZ, 0);
 			file_size = atoi(buffer);
@@ -88,6 +89,7 @@ main(void)
 			_exit(0);
 		}
 		else {
+			wait(&status);
 			close(new_sock);
 		}
 	} while (1);
