@@ -12,7 +12,7 @@
 #include <sys/sendfile.h>
 #include <netdb.h>
 
-#define PORT 					5000
+#define PORT 					6665	
 #define FILE_TO_SEND	"foo.c"
 
 	
@@ -24,6 +24,7 @@ main(int argc, char *argv[])
 	int orig_sock;
 	int fd;
 	int sent_bytes = 0;
+	char buffer[BUFSIZ];
 	char file_size[256];
 	off_t offset;
 	int remain_data;
@@ -90,6 +91,8 @@ main(int argc, char *argv[])
 				((remain_data > 0))){
 		remain_data -= sent_bytes;
 	}
+	int len2 = 0;
+	while ((len2 = read(orig_sock, buffer, BUFSIZ)) > 0){}
 
 	close(orig_sock);
 	exit(0);

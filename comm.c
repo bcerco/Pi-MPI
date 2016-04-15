@@ -11,7 +11,7 @@
 #include <arpa/inet.h>
 #include <errno.h>
 
-#define PORT 			5000
+#define PORT 			6665
 #define FILENAME 	"foo.c"
 int
 main(void) 
@@ -21,6 +21,7 @@ main(void)
 	socklen_t	clnt_len;
 	int status;
 	char buffer[BUFSIZ];
+	char end = '.';
 	printf("BUFSIZ: %d\n", BUFSIZ);
 	int file_size;
 	FILE *received_file;
@@ -86,6 +87,7 @@ main(void)
 				fwrite(buffer, sizeof(char), len, received_file);
 				remain_data -= len;
 			}
+			write(new_sock, &end, sizeof(end));
 			printf("%s\n", strerror(errno));
 			fclose(received_file);
 			close(new_sock);
