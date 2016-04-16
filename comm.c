@@ -21,7 +21,7 @@ main(void)
 	socklen_t	clnt_len;
 	int status;
 	char buffer[BUFSIZ];
-	char end = '.';
+	int ack = 1;
 	printf("BUFSIZ: %d\n", BUFSIZ);
 	int file_size;
 	FILE *received_file;
@@ -71,7 +71,8 @@ main(void)
 			/* get the size in bytes of the incoming file */
 			recv(new_sock, buffer, BUFSIZ, 0);
 			file_size = atoi(buffer);
-
+			send(new_sock, &ack, sizeof(ack), 0);
+			memset(&buffer, 0, BUFSIZ);
 			/* attempt to open file */
 			received_file = fopen(FILENAME, "w");
 			if (received_file == NULL){
@@ -87,7 +88,6 @@ main(void)
 				fwrite(buffer, sizeof(char), len, received_file);
 				remain_data -= len;
 			}
-			write(new_sock, &end, sizeof(end));
 			printf("%s\n", strerror(errno));
 			fclose(received_file);
 			close(new_sock);

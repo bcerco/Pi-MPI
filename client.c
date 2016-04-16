@@ -15,14 +15,15 @@
 #define PORT 					6665	
 #define FILE_TO_SEND	"foo.c"
 
-	
+
 int
 main(int argc, char *argv[])
 {
 	socklen_t sock_len;
 	ssize_t len;
+	int ack = 0;
 	int orig_sock;
-	FILE *fd;
+	int fd;
 	int sent_bytes = 0;
 	char buffer[BUFSIZ];
 	char file_size[256];
@@ -30,8 +31,8 @@ main(int argc, char *argv[])
 	int remain_data;
 
 	memset(&buffer, 0, sizeof(buffer));
-    memset(&file_size, 0, sizeof(file_size));
-    struct sockaddr_in
+	memset(&file_size, 0, sizeof(file_size));
+	struct sockaddr_in
 		serv_adr;
 
 	struct hostent *host;
@@ -66,11 +67,11 @@ main(int argc, char *argv[])
 		exit(EXIT_FAILURE);
 	}
 	/* open file */
-	fd = fopen(FILE_TO_SEND, "r");
-	/*if (fd == -1) {
+	fd = open(FILE_TO_SEND, O_RDONLY);
+	if (fd == -1) {
 		fprintf(stderr, "Error opening file --> %s", strerror(errno));
 		exit(EXIT_FAILURE);
-	}*/
+	}
 	/* Get file stats */
 	if (stat(FILE_TO_SEND, &file_stat) != 0){
 		fprintf(stderr, "Error fstat --> %s", strerror(errno));
@@ -81,6 +82,7 @@ main(int argc, char *argv[])
 	sprintf(file_size, "%d", (int)file_stat.st_size);
 	sock_len = sizeof(struct sockaddr_in);
 	len = send(orig_sock, file_size, sizeof(file_size), 0);
+	recv(orig_sock, &ack, sizeof(ack), 0);
 	if (len < 0){
 		fprintf(stderr, "Error sending file size --> %s", strerror(errno));
 		exit(EXIT_FAILURE);
@@ -88,18 +90,12 @@ main(int argc, char *argv[])
 	/* send file in chunks */
 	offset = 0;
 	remain_data = file_stat.st_size;
-	while (remain_data > 0){
-        sent_bytes = fread(buffer, sizeof(char), BUFSIZ, fd);
-        remain_data -= sent_bytes;
-        write(orig_sock, buffer, sent_bytes);
-        memset(&buffer, 0, BUFSIZ);
-    }
-    fclose(fd);
-    /*while (((sent_bytes = sendfile(orig_sock, fd, &offset, BUFSIZ)) > 0)
-				&&
-				((remain_data > 0))){
-        remain_data -= sent_bytes;
-	}*/
+	while (((sent_bytes = sendfile(orig_sock, fd, &offset, BUFSIZ)) > 0)
+		&&
+		((remain_data > 0))){
+		remain_data -= sent_bytes;
+	}
+	close(fd);
 	close(orig_sock);
 	exit(0);
 }
