@@ -22,14 +22,16 @@ main(int argc, char *argv[])
 	socklen_t sock_len;
 	ssize_t len;
 	int orig_sock;
-	int fd;
+	FILE *fd;
 	int sent_bytes = 0;
 	char buffer[BUFSIZ];
 	char file_size[256];
 	off_t offset;
 	int remain_data;
 
-	struct sockaddr_in
+	memset(&buffer, 0, sizeof(buffer));
+    memset(&file_size, 0, sizeof(file_size));
+    struct sockaddr_in
 		serv_adr;
 
 	struct hostent *host;
@@ -64,13 +66,13 @@ main(int argc, char *argv[])
 		exit(EXIT_FAILURE);
 	}
 	/* open file */
-	fd = open(FILE_TO_SEND, O_RDONLY);
-	if (fd == -1) {
+	fd = fopen(FILE_TO_SEND, "r");
+	/*if (fd == -1) {
 		fprintf(stderr, "Error opening file --> %s", strerror(errno));
 		exit(EXIT_FAILURE);
-	}
+	}*/
 	/* Get file stats */
-	if (fstat(fd, &file_stat) < 0){
+	if (stat(FILE_TO_SEND, &file_stat) != 0){
 		fprintf(stderr, "Error fstat --> %s", strerror(errno));
 		exit(EXIT_FAILURE);
 	}
@@ -86,14 +88,18 @@ main(int argc, char *argv[])
 	/* send file in chunks */
 	offset = 0;
 	remain_data = file_stat.st_size;
-	while (((sent_bytes = sendfile(orig_sock, fd, &offset, BUFSIZ)) > 0)
+	while (remain_data > 0){
+        sent_bytes = fread(buffer, sizeof(char), BUFSIZ, fd);
+        remain_data -= sent_bytes;
+        write(orig_sock, buffer, sent_bytes);
+        memset(&buffer, 0, BUFSIZ);
+    }
+    fclose(fd);
+    /*while (((sent_bytes = sendfile(orig_sock, fd, &offset, BUFSIZ)) > 0)
 				&&
 				((remain_data > 0))){
-		remain_data -= sent_bytes;
-	}
-	int len2 = 0;
-	while ((len2 = read(orig_sock, buffer, BUFSIZ)) > 0){}
-
+        remain_data -= sent_bytes;
+	}*/
 	close(orig_sock);
 	exit(0);
 }
