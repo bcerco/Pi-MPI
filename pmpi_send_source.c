@@ -89,7 +89,7 @@ pmpi_send_source(char *host_address, char *file_name)
   recv(orig_sock, &ack, sizeof(ack), 0);
   
   /* send file name */
-  len = send(orig_sock, file_name, sizeof(file_name), 0);
+  len = send(orig_sock, file_name, strlen(file_name), 0);
   if (len < 0){
     fprintf(stderr, "Error sending file size --> %s", strerror(errno));
     exit(EXIT_FAILURE);
