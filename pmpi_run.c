@@ -15,7 +15,9 @@ main(int argc, char ** argv)
 	int status;
 	int out = 0;
 	int pd[2];
-	char buffer[BUFSIZ];
+	char *source_code;
+  char *binary_file;
+  char buffer[BUFSIZ];
 	memset(&buffer, 0, BUFSIZ);
 	pid_t pid;
 	
@@ -23,9 +25,13 @@ main(int argc, char ** argv)
 	if (pipe(pd) == -1)
 		die("pipe");
 	/* exit if too few arguments */
-	if (argc < 2)
-		return 1;
-	char *const compile_params[] = {"gcc", argv[1], "-o", "test", NULL};
+	if (argc < 2){
+		fprintf(stderr, "Ussage: %d\n", argc);
+    exit(EXIT_FAILURE); 
+  }
+	source_code = strdup(argv[1]);
+  binary_file = strtok(argv[1], ".");
+  char *const compile_params[] = {"gcc", source_code, "-o", binary_file, NULL};
 	
 	/* fork and exec to compile program */
 	if ((pid = fork()) == -1)
@@ -46,6 +52,6 @@ main(int argc, char ** argv)
 		}
 		wait(&status);
 	}
-	
+  free((char *)source_code);	
 	return 0;
 }
