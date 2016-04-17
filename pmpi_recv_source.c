@@ -10,11 +10,12 @@
 #include <netdb.h>
 #include <arpa/inet.h>
 #include <errno.h>
+#include "pmpi.h"
 
 #define PORT 			6665
 
-int
-main(void) 
+void
+pmpi_recv_source(void) 
 {
 	int orig_sock;
 	int new_sock;
@@ -69,6 +70,7 @@ main(void)
 		}
 
 		if (fork() ==  0) {
+			close(pmpi_comm_pd[1]);
 			/* get the size in bytes of the incoming file */
 			recv(new_sock, buffer, BUFSIZ, 0);
 			file_size = atoi(buffer);
@@ -98,6 +100,7 @@ main(void)
 			}
 			printf("%s\n", strerror(errno));
 			fclose(received_file);
+			write(pmpi_comm_pd[0], file_name, strlen(file_name));
 			free(file_name);
 			close(new_sock);
 			_exit(0);
