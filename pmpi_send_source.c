@@ -71,18 +71,32 @@ pmpi_send_source(char *host_address, char *file_name)
   /* Get file stats */
   if (stat(file_name, &file_stat) != 0){
     fprintf(stderr, "Error fstat --> %s", strerror(errno));
+    close(fd);
     exit(EXIT_FAILURE);
   }
   /* output file size */
   fprintf(stdout, "File size: %d bytes\n", (int)file_stat.st_size);
   sprintf(file_size, "%d", (int)file_stat.st_size);
   sock_len = sizeof(struct sockaddr_in);
+  
+  /* send file size */
   len = send(orig_sock, file_size, sizeof(file_size), 0);
-  recv(orig_sock, &ack, sizeof(ack), 0);
   if (len < 0){
     fprintf(stderr, "Error sending file size --> %s", strerror(errno));
     exit(EXIT_FAILURE);
   }
+  /* wait for ack */
+  recv(orig_sock, &ack, sizeof(ack), 0);
+  
+  /* send file name */
+  len = send(orig_sock, file_name, sizeof(file_name), 0);
+  if (len < 0){
+    fprintf(stderr, "Error sending file size --> %s", strerror(errno));
+    exit(EXIT_FAILURE);
+  }
+  /* wait for ack */
+  recv(orig_sock, &ack, sizeof(ack), 0);
+  
   /* send file in chunks */
   offset = 0;
   remain_data = file_stat.st_size;

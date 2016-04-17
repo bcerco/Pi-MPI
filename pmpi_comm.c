@@ -26,6 +26,7 @@ main(void)
 	int file_size;
 	FILE *received_file;
 	int remain_data = 0;
+  char *file_name;
 	struct sockaddr_in
 		clnt_adr,
 		serv_adr;
@@ -71,10 +72,17 @@ main(void)
 			/* get the size in bytes of the incoming file */
 			recv(new_sock, buffer, BUFSIZ, 0);
 			file_size = atoi(buffer);
-			send(new_sock, &ack, sizeof(ack), 0);
+			/* send ack */
+      send(new_sock, &ack, sizeof(ack), 0);
 			memset(&buffer, 0, BUFSIZ);
-			/* attempt to open file */
-			received_file = fopen(FILENAME, "w");
+			/* get file name */
+      recv(new_sock, file_name, BUFSIZ, 0);
+      /* send ack */
+      send(new_sock, &ack, sizeof(ack), 0);
+			memset(&buffer, 0, BUFSIZ);
+    
+      /* attempt to open file */
+			received_file = fopen(file_name, "w");
 			if (received_file == NULL){
 				fprintf(stderr, "Failed to open file --> %s\n", strerror(errno));
 				exit(EXIT_FAILURE);
