@@ -21,6 +21,7 @@ pmpi_recv_source(void)
 	int new_sock;
 	socklen_t	clnt_len;
 	int status;
+	char message[256];
 	char buffer[BUFSIZ];
 	int ack = 1;
 	printf("BUFSIZ: %d\n", BUFSIZ);
@@ -70,7 +71,6 @@ pmpi_recv_source(void)
 		}
 
 		if (fork() ==  0) {
-			close(pmpi_comm_pd[1]);
 			/* get the size in bytes of the incoming file */
 			recv(new_sock, buffer, BUFSIZ, 0);
 			file_size = atoi(buffer);
@@ -100,7 +100,8 @@ pmpi_recv_source(void)
 			}
 			printf("%s\n", strerror(errno));
 			fclose(received_file);
-			write(pmpi_comm_pd[0], file_name, strlen(file_name));
+			/* write file_name to pipe */
+			write(pmpi_comm_pd[1], file_name, strlen(file_name));
 			free(file_name);
 			close(new_sock);
 			_exit(0);
