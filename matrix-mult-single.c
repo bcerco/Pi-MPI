@@ -2,14 +2,16 @@
 #include <stdlib.h>
 #include <time.h>
 
-int *buildMatrix(int rows, int cols, int fill) {
+int 
+*buildMatrix(int rows, int cols, int fill) 
+{
 
 	int *matrix = (int *)malloc(rows * cols * sizeof(int));
-	
+
 	if (fill) {
 		for (int row = 0; row < rows; ++row) {
 			for (int col = 0; col < cols; ++col) {
-				*(matrix + row*cols + col) = rand() % 51
+				*(matrix + row*cols + col) = rand() % 51;
 			}
 		}
 	}
@@ -17,7 +19,9 @@ int *buildMatrix(int rows, int cols, int fill) {
 	return matrix;
 }
 
-int main(int argc, char *argv[]) {
+int 
+main(int argc, char *argv[]) 
+{
 
 	srand(time(NULL));
 
@@ -47,6 +51,9 @@ int main(int argc, char *argv[]) {
 		}
 	}
 
+	free(matrixA);
+	free(matrixB);
+	free(matrixC);
 	printf("Done");
 
 }
