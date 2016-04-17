@@ -12,7 +12,7 @@
 #include <errno.h>
 
 #define PORT 			6665
-#define FILENAME 	"foo.c"
+
 int
 main(void) 
 {
@@ -76,11 +76,11 @@ main(void)
 			send(new_sock, &ack, sizeof(ack), 0);
 			memset(&buffer, 0, BUFSIZ);
 			/* get file name */
-			recv(new_sock, file_name, BUFSIZ, 0);
+			recv(new_sock, buffer, BUFSIZ, 0);
 			/* send ack */
+			file_name = strdup(buffer);
 			send(new_sock, &ack, sizeof(ack), 0);
 			memset(&buffer, 0, BUFSIZ);
-
 			/* attempt to open file */
 			received_file = fopen(file_name, "w");
 			if (received_file == NULL){
@@ -98,6 +98,7 @@ main(void)
 			}
 			printf("%s\n", strerror(errno));
 			fclose(received_file);
+			free(file_name);
 			close(new_sock);
 			_exit(0);
 		}
