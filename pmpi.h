@@ -20,6 +20,7 @@ void pmpi_send_msg(void *buf, int type, int size, char *dest);
 void pmpi_send_msg_direct(char *host_address, void *message, int size);
 void pmpi_recv_msg_direct(void);
 void pmpi_init(int *rank);
+void pmpi_distribute_source(int nodes, char *source);
 
 extern int pmpi_comm_pd[2];
 extern int pmpi_msg_pd[2];
