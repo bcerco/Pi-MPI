@@ -15,7 +15,7 @@ int pmpi_comm_pd[2];
 int
 create_pipe(void)
 {
-	return pipe(pmpi_comm_pd);
+	return pipe(pmpi_comm_pd) | pipe(pmpi_msg_pd);
 }
 
 int
