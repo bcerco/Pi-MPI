@@ -4,9 +4,11 @@
 #define PMPI_H_
 
 /* pmpi functions */
-const int PMPI_INT = 0;
-const int PMPI_CHAR = 1;
-const int PMPI_FLOAT = 2;
+static const int PMPI_INT = 0;
+static const int PMPI_CHAR = 1;
+static const int PMPI_FLOAT = 2;
+
+char * this_add;
 
 void pmpi_send_source(char *host_address, char *file_name);
 void pmpi_recv_source(void);
@@ -14,6 +16,7 @@ void pmpi_compile(char *file_name);
 void pmpi_run(void);
 void pmpi_recv_msg(void *buf, int type, int size);
 void pmpi_send_msg(void *buf, int type, int size);
+void pmpi_init(int *rank);
 
 extern int pmpi_comm_pd[2];
 extern int pmpi_msg_pd[2];

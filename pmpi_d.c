@@ -19,11 +19,14 @@ create_pipe(void)
 }
 
 int
-main(void)
+main(int argc, char **argv)
 {
 	int status; 
 	char message[256];
 	int bytes = 0;
+	if (argc < 2)
+		exit(EXIT_FAILURE);
+	this_add = argv[1];
 	pid_t pmpi_comm_pid;
 	if (create_pipe() == -1)
 		die("pipe");
