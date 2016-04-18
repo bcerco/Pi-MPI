@@ -34,7 +34,9 @@ main(int argc, char ** argv)
 	source_code = strdup(argv[1]);
 	binary_file = strtok(argv[1], ".");
 	//char *const compile_params[] = {"gcc", source_code, "-o", binary_file, NULL};
-	char *const compile_params[] = {"gcc", source_code, "-o", "prog", NULL};
+	char *const compile_params[] = {"gcc", source_code, "pmpi_recv_msg_direct.c",
+		"pmpi_send_msg_direct.c","pmpi_recv_msg.c", "pmpi_send_msg.c",
+		"pmpi_init.c","-o", "prog", NULL};
 
 	/* fork and exec to compile program */
 	if ((pid = fork()) == -1)
@@ -55,7 +57,7 @@ main(int argc, char ** argv)
 		}
 		wait(&status);
 
-		pmpi_distribute_source(atoi(argv[2]), source_code);
+		pmpi_distribute_source(atoi(argv[2]) -1, source_code);
 		if (!fork()){
 			execl("./prog", "prog", NULL);
 			die("execl");
