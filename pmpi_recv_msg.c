@@ -16,13 +16,13 @@ void
 pmpi_recv_msg(void *buf, int type, int size)
 {
 	switch(type){
-		case PMPI_INT:
+		case 0:
 			read(pmpi_msg_pd[0], (int *)buf, size);
 			break;
-		case PMPI_CHAR:
+		case 1:
 			read(pmpi_msg_pd[0], (char *)buf, size);
 			break;
-		case PMPI_FLOAT:
+		case 2:
 			read(pmpi_msg_pd[0], (float *)buf, size);
 			break;
 		default:

@@ -4,9 +4,9 @@
 #define PMPI_H_
 
 /* pmpi functions */
-static const int PMPI_INT = 0;
-static const int PMPI_CHAR = 1;
-static const int PMPI_FLOAT = 2;
+static int PMPI_INT = 0;
+static int PMPI_CHAR = 1;
+static int PMPI_FLOAT = 2;
 
 char * this_add;
 char * master;

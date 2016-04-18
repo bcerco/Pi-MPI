@@ -16,15 +16,15 @@ void
 pmpi_send_msg(void *buf, int type, int size, char *dest)
 {
 	switch(type){
-		case PMPI_INT:
+		case 0:
 			//write(pmpi_msg_pd[1], (int *)buf, size);
 			pmpi_send_msg_direct(dest, (int *) buf, size);
 			break;
-		case PMPI_CHAR:
+		case 1:
 			//write(pmpi_msg_pd[1], (char *)buf, size);
 			pmpi_send_msg_direct(dest, (int *) buf, size);
 			break;
-		case PMPI_FLOAT:
+		case 2:
 			//write(pmpi_msg_pd[1], (float *)buf, size);
 			pmpi_send_msg_direct(dest, (int *) buf, size);
 			break;
