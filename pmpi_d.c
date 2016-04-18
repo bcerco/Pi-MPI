@@ -40,18 +40,24 @@ main(int argc, char **argv)
 		pmpi_recv_source();
 	}
 	else{
-		while(1){
-			memset(&message, 0, sizeof(message));
-			bytes = read(pmpi_comm_pd[0], message, 256);
-			//printf("%s\n", strerror(errno));
-			//printf("%d\n", bytes);
-			if (bytes > 0){
+		if (!fork()){
+			pmpi_recv_msg_direct();
+		}
+		else{
+			while(1){
+				memset(&message, 0, sizeof(message));
+				bytes = read(pmpi_comm_pd[0], message, 256);
+				//printf("%s\n", strerror(errno));
 				//printf("%d\n", bytes);
-				//printf("%s\n", message);
-				//printf("%d\n", strlen(message));
-				pmpi_compile(message);
-				pmpi_run();
+				if (bytes > 0){
+					//printf("%d\n", bytes);
+					//printf("%s\n", message);
+					//printf("%d\n", strlen(message));
+					pmpi_compile(message);
+					pmpi_run();
+				}
 			}
+			wait(&status);
 		}
 	}
 	return 0;
