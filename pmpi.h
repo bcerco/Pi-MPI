@@ -6,6 +6,7 @@
 /* pmpi functions */
 void pmpi_send_source(char *host_address, char *file_name);
 void pmpi_recv_source(void);
+void pmpi_compile(char *file_name);
 
 extern int pmpi_comm_pd[2];
 
