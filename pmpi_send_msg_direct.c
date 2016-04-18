@@ -19,7 +19,7 @@ pmpi_send_msg_direct(char *host_address, char *message)
 {
 	int orig_sock;
 	int len = 0;
-	
+
 	struct sockaddr_in
 		serv_adr;
 
@@ -39,19 +39,19 @@ pmpi_send_msg_direct(char *host_address, char *message)
 
 	serv_adr.sin_port = htons(PORT);
 
-  if ((orig_sock = socket(AF_INET, SOCK_STREAM,0)) < 0) {
-    fprintf(stderr, "Error creating socket --> %s\n", strerror(errno));
-    exit(EXIT_FAILURE);
-  }
+	if ((orig_sock = socket(AF_INET, SOCK_STREAM,0)) < 0) {
+		fprintf(stderr, "Error creating socket --> %s\n", strerror(errno));
+		exit(EXIT_FAILURE);
+	}
 
-  if (connect(orig_sock, (struct sockaddr *)&serv_adr, sizeof(serv_adr)) < 0) {
-    fprintf(stderr, "Error on connect --> %s\n", strerror(errno));
-    exit(EXIT_FAILURE);
-  }
+	if (connect(orig_sock, (struct sockaddr *)&serv_adr, sizeof(serv_adr)) < 0) {
+		fprintf(stderr, "Error on connect --> %s\n", strerror(errno));
+		exit(EXIT_FAILURE);
+	}
 	len = send(orig_sock, message, strlen(message), 0);
-  if (len < 0){
-    fprintf(stderr, "Error sending file size --> %s", strerror(errno));
-    exit(EXIT_FAILURE);
-  }
+	if (len < 0){
+		fprintf(stderr, "Error sending file size --> %s", strerror(errno));
+		exit(EXIT_FAILURE);
+	}
 	close(orig_sock);
 }
