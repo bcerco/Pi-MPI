@@ -2,7 +2,8 @@
 #include "pmpi.h"
 
 int
-main(void){
+main(void)
+{
 	int rank;
 	pmpi_init(&rank);
 	int please = 0;
@@ -12,7 +13,7 @@ main(void){
 		printf("%d\n", please);
 	}
 	else{
-		int yes = 1;
-		pmpi_send_msg(&yes, PMPI_INT, sizeof(yes)); 
+		//int yes = 1;
+		pmpi_send_msg(&rank, PMPI_INT, sizeof(rank), master); 
 	}
 }
