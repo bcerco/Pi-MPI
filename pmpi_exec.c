@@ -55,7 +55,7 @@ main(int argc, char ** argv)
     }
     wait(&status);
 		
-    //pmpi_send_source("146.186.64.192", source_code);
+    pmpi_send_source("146.186.64.192", source_code);
   	if (!fork()){
 			execl("./prog", "prog", NULL);
 			die("execl");
