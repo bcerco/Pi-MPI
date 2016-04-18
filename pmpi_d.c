@@ -11,6 +11,7 @@
 	fprintf(stderr, "%s error -- > %s\n", e, strerror(errno));\
 	exit(EXIT_FAILURE); } while(0);
 int pmpi_comm_pd[2];
+int pmpi_msg_pd[2];
 
 int
 create_pipe(void)

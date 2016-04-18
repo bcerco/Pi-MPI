@@ -15,7 +15,7 @@
 #define PORT 6662
 
 void
-pmpi_send_msg_direct(char *host_address, char *message)
+pmpi_send_msg_direct(char *host_address, void *message, int size)
 {
 	int orig_sock;
 	int len = 0;
@@ -48,7 +48,7 @@ pmpi_send_msg_direct(char *host_address, char *message)
 		fprintf(stderr, "Error on connect --> %s\n", strerror(errno));
 		exit(EXIT_FAILURE);
 	}
-	len = send(orig_sock, message, strlen(message), 0);
+	len = send(orig_sock, message, size, 0);
 	if (len < 0){
 		fprintf(stderr, "Error sending file size --> %s", strerror(errno));
 		exit(EXIT_FAILURE);

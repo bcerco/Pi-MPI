@@ -21,6 +21,8 @@ pmpi_init(int *rank)
 		exit(EXIT_FAILURE);
 	while ((read = getline(&line, &len, f)) != -1) {
 		line[strlen(line) -1] = '\0';
+		if (!count)
+			master = line;
 		if (strcmp(this_add,line) == 0){
 			*rank = count;
 			return;
