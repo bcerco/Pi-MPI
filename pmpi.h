@@ -10,6 +10,7 @@ void pmpi_compile(char *file_name);
 void pmpi_run(void);
 
 extern int pmpi_comm_pd[2];
+extern int pmpi_msg_pd[2];
 
 int create_pipe(void);
 #endif
