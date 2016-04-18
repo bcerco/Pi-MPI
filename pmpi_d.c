@@ -42,8 +42,9 @@ main(void)
 			//printf("%s\n", strerror(errno));
 			//printf("%d\n", bytes);
 			if (bytes > 0){
-				printf("%d\n", bytes);
-				printf("%s\n", message);
+				//printf("%d\n", bytes);
+				//printf("%s\n", message);
+				//printf("%d\n", strlen(message));
 				pmpi_compile(message);
 				pmpi_run();
 			}
