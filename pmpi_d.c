@@ -44,6 +44,8 @@ main(void)
 			if (bytes > 0){
 				printf("%d\n", bytes);
 				printf("%s\n", message);
+				pmpi_compile(message);
+				pmpi_run();
 			}
 		}
 	}
