@@ -58,13 +58,14 @@ main(int argc, char ** argv)
 		wait(&status);
 
 		pmpi_distribute_source(atoi(argv[2]) -1, source_code);
-		if (!fork()){
-			execl("./prog", "prog", NULL);
-			die("execl");
-		}
-		else{
-			wait(&status);
-		}
+		//if (!fork()){
+			//execl("./prog", "prog", NULL);
+			//die("execl");
+		//}
+		//else{
+			//wait(&status);
+		//}
+		wait(&status);
 	}
 	free((char *)source_code);	
 	return 0;
