@@ -26,4 +26,5 @@ pmpi_distribute_source(int nodes, char *source)
 			count++;
 		}
 	}
+	fclose(f);
 }

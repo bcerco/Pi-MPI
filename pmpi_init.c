@@ -25,9 +25,11 @@ pmpi_init(int *rank)
 			master = line;
 		if (strcmp(this_add,line) == 0){
 			*rank = count;
-			return;
+			//return;
 		}
 		count++;
 	}
+	fclose(f);
+	return;
 	exit(EXIT_FAILURE);
 }
