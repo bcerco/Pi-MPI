@@ -8,8 +8,6 @@ static int PMPI_INT = 0;
 static int PMPI_CHAR = 1;
 static int PMPI_FLOAT = 2;
 
-char * this_add;
-char * master;
 
 void pmpi_send_source(char *host_address, char *file_name);
 void pmpi_recv_source(void);
