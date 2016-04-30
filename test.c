@@ -6,14 +6,11 @@ main(void)
 {
 	int rank;
 	pmpi_init(&rank);
-	int please = 0;
 
 	if (!rank){
-		//pmpi_recv_msg(&please, PMPI_INT, sizeof(please));
-		printf("%d\n", please);
+		printf("I'm the master.\n");
 	}
 	else{
-		//int yes = 1;
-		//pmpi_send_msg(&rank, PMPI_INT, sizeof(rank), master); 
+		printf("I am slave %d.\n", rank);
 	}
 }
