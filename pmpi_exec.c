@@ -28,7 +28,7 @@ main(int argc, char ** argv)
 		die("pipe");
 	/* exit if too few arguments */
 	if (argc < 3){
-		fprintf(stderr, "Ussage: %d\n", argc);
+		fprintf(stderr, "Usage: %d\n", argc);
 		exit(EXIT_FAILURE); 
 	}
 	source_code = strdup(argv[1]);
@@ -55,8 +55,8 @@ main(int argc, char ** argv)
 		}
 		//wait(&status);
 
-		//pmpi_distribute_source(1, source_code);
-		pmpi_send_source("146.186.64.243", source_code);
+		pmpi_distribute_source(atoi(argv[2]), source_code);
+		//pmpi_send_source("146.186.64.243", source_code);
 		//if (!fork()){
 			//execl("./prog", "prog", NULL);
 			//die("execl");
