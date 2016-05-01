@@ -1,5 +1,7 @@
+#include <fcntl.h>
 #include <sys/types.h>
 #include <sys/wait.h>
+#include <sys/stat.h>
 #include <stdio.h>
 #include <unistd.h>
 #include <stdlib.h>
@@ -17,6 +19,7 @@ main(int argc, char ** argv)
 	int status;
 	int out = 0;
 	int pd[2];
+	int i;
 	char *source_code;
 	char *binary_file;
 	char buffer[BUFSIZ];
@@ -53,19 +56,27 @@ main(int argc, char ** argv)
 		while ((out = read(pd[0], buffer, BUFSIZ)) > 0){
 			printf("%s", buffer);
 		}
-		//wait(&status);
-
+		if (!out)
+			return 1;
 		pmpi_distribute_source(atoi(argv[2]), source_code);
-		//pmpi_send_source("146.186.64.243", source_code);
-		//if (!fork()){
-			//execl("./prog", "prog", NULL);
-			//die("execl");
-		//}
-		//else{
-			//wait(&status);
-		//}
+		/* create fifo for each node */
+		i = 0;
+		char *path = NULL;
+		for (; i < atoi(argv[2]); i++){
+			sprintf(path, "node%d.fifo", i);
+			mkfifo(path, 0666);
+		}
+		pmpi_run();
 		wait(&status);
 	}
+	/* unlink the fifo's */
+	i = 0;
+	char *path = NULL;
+	for (; i < atoi(argv[2]); i++){
+		sprintf(path, "node%d.fifo", i);
+		unlink(path);
+	}
+
 	free((char *)source_code);	
 	return 0;
 }

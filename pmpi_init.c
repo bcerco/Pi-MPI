@@ -43,7 +43,6 @@ pmpi_init(int *rank)
 		line[strlen(line) -1] = '\0';
 		if (strcmp(line, node_addr) == 0){
 			*rank = count;
-			break;
 		}
 		count++;
 	}
