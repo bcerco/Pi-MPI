@@ -23,6 +23,7 @@ main(int argc, char ** argv)
 	char *source_code;
 	char *binary_file;
 	char buffer[BUFSIZ];
+	char path[256];
 	memset(&buffer, 0, BUFSIZ);
 	pid_t pid;
 
@@ -72,20 +73,20 @@ main(int argc, char ** argv)
 		pmpi_distribute_source(atoi(argv[2]), source_code);
 		/* create fifo for each node */
 		i = 0;
-		char *path = NULL;
 		for (; i < atoi(argv[2]); i++){
 			sprintf(path, "node%d.fifo", i);
 			mkfifo(path, 0666);
+			memset(&path, 0, sizeof(path));
 		}
 		pmpi_run();
 		wait(&status);
 	}
 	/* unlink the fifo's */
 	i = 0;
-	char *path = NULL;
 	for (; i < atoi(argv[2]); i++){
 		sprintf(path, "node%d.fifo", i);
 		unlink(path);
+		memset(&path, 0, sizeof(path));
 	}
 
 	free((char *)source_code);	
