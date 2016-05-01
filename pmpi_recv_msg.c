@@ -17,17 +17,18 @@
 void
 pmpi_recv_msg(void *buf, int type, int size, int rank)
 {
-	char *path = NULL;
+	ssize_t len;
+	char path[256];
 	/* open the corresponding FIFO for the supplied rank*/
 	sprintf(path, "node%d.fifo", rank);
 	/* open the FIFO in read only mode */
 	int fd = open(path, O_RDONLY);
 	switch(type){
 		case 0:
-			read(fd, (int *)buf, size);
+			len = read(fd, (int *)buf, size);
 			break;
 		case 1:
-			read(fd, (char *)buf, size);
+			len = read(fd, (char *)buf, size);
 			break;
 		case 2:
 			read(fd, (float *)buf, size);

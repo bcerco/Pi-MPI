@@ -44,8 +44,8 @@ main(int argc, char ** argv)
 		source_code, 
 		"pmpi_init.c",
 		"pmpi_recv_msg.c",
-		"pmpi_recv_msg_direct.c",
 		"pmpi_send_msg_direct.c",
+		"pmpi_send_msg.c",
 		"-o", 
 		"prog", 
 		NULL
@@ -68,13 +68,14 @@ main(int argc, char ** argv)
 		while ((out = read(pd[0], buffer, BUFSIZ)) > 0){
 			printf("%s", buffer);
 		}
-		if (!out)
+		if (out)
 			return 1;
 		pmpi_distribute_source(atoi(argv[2]), source_code);
 		/* create fifo for each node */
 		i = 0;
-		for (; i < atoi(argv[2]); i++){
+		for (; i <= atoi(argv[2]); i++){
 			sprintf(path, "node%d.fifo", i);
+			//printf("%s\n", path);
 			mkfifo(path, 0666);
 			memset(&path, 0, sizeof(path));
 		}
@@ -83,7 +84,7 @@ main(int argc, char ** argv)
 	}
 	/* unlink the fifo's */
 	i = 0;
-	for (; i < atoi(argv[2]); i++){
+	for (; i <= atoi(argv[2]); i++){
 		sprintf(path, "node%d.fifo", i);
 		unlink(path);
 		memset(&path, 0, sizeof(path));

@@ -21,11 +21,13 @@ pmpi_recv_msg_direct(void)
 {
 	int orig_sock;
 	int new_sock;
+	int fd;
 	socklen_t	clnt_len;
 	int status;
 	int rank = 0;
 	char buffer[BUFSIZ];
-	printf("BUFSIZ: %d\n", BUFSIZ);
+	char path[256];
+	//printf("BUFSIZ: %d\n", BUFSIZ);
 	struct sockaddr_in
 		clnt_adr,
 		serv_adr;
@@ -70,16 +72,20 @@ pmpi_recv_msg_direct(void)
 		if (fork() ==  0) {
 			/* get the rank of the sender */
 			recv(new_sock, &rank, sizeof(rank), 0);
-			char *path = NULL;
 			/* open the corresponding FIFO */
 			sprintf(path, "node%d.fifo", rank);
 			/* ACK for the rank message */
 			send(new_sock, &rank, sizeof(rank), 0);
 			/* open the FIFO write only */
-			int fd = open(path, O_WRONLY);
+			fd = open(path, O_WRONLY);
+			//printf("%s\n", strerror(errno));
+			//printf("%d\n", fd);
 			while (((len = recv(new_sock, buffer, BUFSIZ, 0)) > 0)){
-				write(fd, buffer, strlen(buffer));
+				//printf("%s\n", buffer);
+				write(fd, buffer, len);
+				memset(&buffer, 0, sizeof(buffer));
 			}
+			//printf("PID: %d\n", getpid());
 			close(fd);
 			close(new_sock);
 			_exit(0);
