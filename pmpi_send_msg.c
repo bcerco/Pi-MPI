@@ -13,7 +13,7 @@
 #include "pmpi.h"
 
 void
-pmpi_send_msg(void *buf, int type, int size, int rank)
+pmpi_send_msg(void *buf, int type, int size, int src, int rank)
 {
 	FILE *f_host;
 	size_t len = 0;
@@ -36,13 +36,13 @@ pmpi_send_msg(void *buf, int type, int size, int rank)
 	}
 	switch(type){
 		case 0:
-			pmpi_send_msg_direct(dest, (int *) buf, size, rank);
+			pmpi_send_msg_direct(dest, (int *) buf, size, src);
 			break;
 		case 1:
-			pmpi_send_msg_direct(dest, (char *) buf, size, rank);
+			pmpi_send_msg_direct(dest, (char *) buf, size, src);
 			break;
 		case 2:
-			pmpi_send_msg_direct(dest, (float *) buf, size, rank);
+			pmpi_send_msg_direct(dest, (float *) buf, size, src);
 			break;
 		default:
 			break;
