@@ -1,3 +1,4 @@
+#include <fcntl.h>
 #include <stdio.h>
 #include <string.h>
 #include <ctype.h>
@@ -6,6 +7,7 @@
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <sys/wait.h>
+#include <sys/stat.h>
 #include <netinet/in.h>
 #include <netdb.h>
 #include <arpa/inet.h>
@@ -21,6 +23,7 @@ pmpi_recv_msg_direct(void)
 	int new_sock;
 	socklen_t	clnt_len;
 	int status;
+	int rank = 0;
 	char buffer[BUFSIZ];
 	printf("BUFSIZ: %d\n", BUFSIZ);
 	struct sockaddr_in
@@ -65,12 +68,19 @@ pmpi_recv_msg_direct(void)
 		}
 
 		if (fork() ==  0) {
+			/* get the rank of the sender */
+			recv(new_sock, &rank, sizeof(rank), 0);
+			char *path = NULL;
+			/* open the corresponding FIFO */
+			sprintf(path, "node%d.fifo", rank);
+			/* ACK for the rank message */
+			send(new_sock, &rank, sizeof(rank), 0);
+			/* open the FIFO write only */
+			int fd = open(path, O_WRONLY);
 			while (((len = recv(new_sock, buffer, BUFSIZ, 0)) > 0)){
-				write(pmpi_msg_pd[1], buffer, strlen(buffer));
+				write(fd, buffer, strlen(buffer));
 			}
-			//printf("%s\n", strerror(errno));
-			/* write file_name to pipe */
-			//write(pmpi_comm_pd[1], file_name, strlen(file_name));
+			close(fd);
 			close(new_sock);
 			_exit(0);
 		}
