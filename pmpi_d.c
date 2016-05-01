@@ -37,10 +37,10 @@ main(void)
 		pmpi_recv_source();
 	}
 	else{
-		//if (!fork()){
-			//pmpi_recv_msg_direct();
-		//}
-		//else{
+		if (!fork()){
+			pmpi_recv_msg_direct();
+		}
+		else{
 			while(1){
 				memset(&message, 0, sizeof(message));
 				bytes = read(pmpi_comm_pd[0], message, 256);
@@ -55,7 +55,7 @@ main(void)
 				}
 			}
 			wait(&status);
-		//}
+		}
 	}
 	return 0;
 	wait(&status);
