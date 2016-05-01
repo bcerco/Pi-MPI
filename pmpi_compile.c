@@ -13,7 +13,18 @@ pmpi_compile(char *file_name)
 	int status;
 	//char *binary_file = strdup(file_name);
 	//binary_file = strtok(file_name, ".");
-	char *const compile_params[] = {"gcc", file_name,"pmpi_init.c","-o", "prog", NULL};
+	char *const compile_params[] = 
+	{
+		"gcc", 
+		file_name,
+		"pmpi_init.c",
+		"pmpi_recv_msg.c",
+		"pmpi_send_msg.c",
+		"pmpi_send_msg_direct.c",
+		"-o", 
+		"prog", 
+		NULL
+	};
 
 	/* fork and exec to compile program */
 	if (!fork()){
