@@ -13,7 +13,7 @@ void pmpi_send_source(char *host_address, char *file_name);
 void pmpi_recv_source(void);
 void pmpi_compile(char *file_name);
 void pmpi_run(void);
-void pmpi_recv_msg(void *buf, int type, int size);
+void pmpi_recv_msg(void *buf, int type, int size, int rank);
 void pmpi_send_msg(void *buf, int type, int size, int rank);
 void pmpi_send_msg_direct(char *host_address, void *message, int size, int rank);
 void pmpi_recv_msg_direct(void);
