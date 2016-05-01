@@ -13,20 +13,36 @@
 #include "pmpi.h"
 
 void
-pmpi_send_msg(void *buf, int type, int size, char *dest)
+pmpi_send_msg(void *buf, int type, int size, int rank)
 {
+	FILE *f_host;
+	size_t len = 0;
+	ssize_t read;
+	char *dest = NULL;
+	int count = 0;
+	/* open the file that contains the addresses of all nodes */
+	f_host = fopen("hosts.txt", "r");
+	if (f_host == NULL){
+		fprintf(stderr, "Error opening hosts.txt --> %s\n", strerror(errno));
+		exit(EXIT_FAILURE);
+	}
+	/* get the address of the supplied rank */
+	while ((read = getline(&dest, &len, f_host)) != -1){
+		if (count == rank){
+			dest[strlen(dest) -1] = '\0';
+			break;
+		}
+		count++;
+	}
 	switch(type){
 		case 0:
-			//write(pmpi_msg_pd[1], (int *)buf, size);
-			pmpi_send_msg_direct(dest, (int *) buf, size);
+			pmpi_send_msg_direct(dest, (int *) buf, size, rank);
 			break;
 		case 1:
-			//write(pmpi_msg_pd[1], (char *)buf, size);
-			pmpi_send_msg_direct(dest, (int *) buf, size);
+			pmpi_send_msg_direct(dest, (char *) buf, size, rank);
 			break;
 		case 2:
-			//write(pmpi_msg_pd[1], (float *)buf, size);
-			pmpi_send_msg_direct(dest, (int *) buf, size);
+			pmpi_send_msg_direct(dest, (float *) buf, size, rank);
 			break;
 		default:
 			break;
