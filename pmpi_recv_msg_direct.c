@@ -91,7 +91,7 @@ pmpi_recv_msg_direct(void)
 			_exit(0);
 		}
 		else {
-			wait(&status);
+			//wait(&status);
 			close(new_sock);
 		}
 	} while (1);
