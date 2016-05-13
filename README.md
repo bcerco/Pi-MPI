@@ -40,7 +40,7 @@ Right now there is a shell script, setup.sh, which you can use to compile
 pmpid and pmpiexec.  You'll need to compile pmpid on each node and then run it
 in the background.  
 ```sh
-./setup.h pmpid
+./setup.sh pmpid
 ./pmpid &
 ```
 You will only need pmpiexec on the master node.
